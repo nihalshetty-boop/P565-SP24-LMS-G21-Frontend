@@ -39,50 +39,52 @@ function Form({ type }) {
   const onSubmit = type === "login" ? onSubmitLogin : onSubmitSignup;
 
   return (
-    <div>
-      <div className="flex flex-col gap-2 justify-center py-10">
-        <div className="shadow-lg p-6 flex flex-col items-center gap-6">
+    <div className="min-h-screen bg-[#e1eaef] py-10">
+      <div>
+        <Link to="/">
+          <img className="h-12" src="/Logos/coursecraft_logo.png" alt="Coursecraft" />
+        </Link>
+      </div>
+      <div className=" flex flex-col gap-2 justify-center mt-10">
+        <div className="bg-[#bee1e6] rounded-3xl flex flex-col items-center w-[500px] m-auto gap-6 pt-5">
           <div className="flex flex-col gap-8">
-            <h1 className="text-xl text-gray-700 font-bold">
+            <h1 className='text-[35px] text-gray-700' style={{ lineHeight: '75px' }}>
               {type === "login" ? "Sign in to your account" : "Sign up"}
             </h1>
           </div>
           <div>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
             {type === "signup" && (
-              <div className="flex flex-col">
-                <label className="pl-1 text-gray-500 ">Signup As:</label>
-                <div className="flex items-center gap-2 pt-3">
-                  <input
-                    type="radio"
-                    id="student"
-                    name="role"
-                    checked={student}
-                    onChange={() => { setStudent(true); setInstructor(false); }}
-                  />
-                  <label htmlFor="student">Student</label>
-                  <input
-                    type="radio"
-                    id="instructor"
-                    name="role"
-                    checked={instructor}
-                    onChange={() => { setInstructor(true); setStudent(false); }}
-                  />
-                  <label htmlFor="instructor">Instructor</label>
+              <div className="flex items-center flex-col">
+                {/* <label className="pl-1 text-[17px] text-gray-700">Signup As:</label> */}
+                <div className="flex gap-20 pb-3">
+                  <button
+                    className={`px-4 py-2 rounded-md ${!student ? 'bg-[#0fa3b1] text-white' : 'bg-[#bee1e6] text-[#0fa3b1] border-2 border-[#0fa3b1]'}`}
+                    onClick={() => { setStudent(true); setInstructor(false); }}
+                  >
+                    Student
+                  </button>
+                  <button
+                    className={`px-4 py-2 rounded-md ${!instructor ? 'bg-[#0fa3b1] text-white' : 'bg-[#bee1e6] text-[#0fa3b1] border-2 border-[#0fa3b1]'}`}
+                    onClick={() => { setInstructor(true); setStudent(false); }}
+                  >
+                    Instructor
+                  </button>
                 </div>
               </div>
-              
-            )}</form>
+            )}
+
+            </form>
             
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
             {type === "signup" && (
               <div className="flex flex-col">
-                <label className="pl-1 text-gray-500 pt-3" htmlFor="fullName">
+                <label className="pl-1 text-[17px] text-gray-700" htmlFor="fullName">
                   Full Name
                 </label>
                 
                 <input
-                  className="border-2 py-2 px-4 rounded-md"
+                  className="border-2 py-2 px-4 rounded-md focus:outline-none focus:border-[#0fa3b1]"
                   type="text"
                   placeholder="Enter your Full Name"
                   id="fullName"
@@ -92,11 +94,11 @@ function Form({ type }) {
             )}
             {type === "signup" && (
               <div className="flex flex-col">
-                <label className="pl-1 text-gray-500" htmlFor="department">
+                <label className="pl-1 text-[17px] text-gray-700" htmlFor="department">
                   Department
                 </label>
                 <input
-                  className="border-2 py-2 px-4 rounded-md"
+                  className="border-2 py-2 px-4 rounded-md focus:outline-none focus:border-[#0fa3b1]"
                   type="text"
                   placeholder="Enter your department"
                   id="department"
@@ -106,11 +108,11 @@ function Form({ type }) {
             )}
             {type === "signup" && (
               <div className="flex flex-col">
-                <label className="pl-1 text-gray-500" htmlFor="level">
+                <label className="pl-1 text-[17px] text-gray-700" htmlFor="level">
                   Level
                 </label>
                 <select
-                  className="border-2 py-2 px-4 rounded-md"
+                  className="border-2 py-2 px-4 rounded-md focus:outline-none focus:border-[#0fa3b1]"
                   id="level"
                   {...register("level", { required: "This field is required" })}
                 >
@@ -121,11 +123,11 @@ function Form({ type }) {
             )}
             {type === "signup" && (
               <div className="flex flex-col">
-                <label className="pl-1 text-gray-500" htmlFor="courses">
+                <label className="pl-1 text-[17px] text-gray-700" htmlFor="courses">
                   Courses
                 </label>
                 <input
-                  className="border-2 py-2 px-4 rounded-md"
+                  className="border-2 py-2 px-4 rounded-md focus:outline-none focus:border-[#0fa3b1]"
                   type="text"
                   placeholder="Enter your courses"
                   id="courses"
@@ -135,11 +137,11 @@ function Form({ type }) {
             )}
             {type === "signup" && instructor && (
               <div className="flex flex-col">
-                <label className="pl-1 text-gray-500" htmlFor="qualification">
+                <label className="pl-1 text-[17px] text-gray-700" htmlFor="qualification">
                   Qualification
                 </label>
                 <input
-                  className="border-2 py-2 px-4 rounded-md"
+                  className="border-2 py-2 px-4 rounded-md focus:outline-none focus:border-[#0fa3b1]"
                   type="text"
                   placeholder="Enter your qualification"
                   id="qualification"
@@ -149,10 +151,10 @@ function Form({ type }) {
             )}
             <div className="flex flex-col">
               <label className="pl-1 text-gray-500" htmlFor="email">
-                Email
+              <h1 className='text-[18px] text-gray-700'>Email</h1>
               </label>
               <input
-                className="border-2 py-2 px-4 rounded-md"
+                className="border-2 py-2 px-4 rounded-md text-gray-700 focus:outline-none focus:border-[#0fa3b1]"
                 type="email"
                 placeholder="Enter your email"
                 id="email"
@@ -161,10 +163,10 @@ function Form({ type }) {
             </div>
             <div className="flex flex-col">
               <label className="pl-1 text-gray-500" htmlFor="password">
-                Password
+              <h1 className='text-[18px] text-gray-700'>Password</h1>
               </label>
               <input
-                className="border-2 py-2 px-4 rounded-md mb-2"
+                className="border-2 py-2 px-4 rounded-md mb-2 text-gray-700 focus:outline-none focus:border-[#0fa3b1]"
                 type="password"
                 placeholder="Enter your password"
                 autoComplete="username"
@@ -172,44 +174,45 @@ function Form({ type }) {
                 {...register("password", { required: "This field is required" })}
               />
               {type === "login" && (
-                <Link to={"/password-recovery"} className="text-sm text-blue-400 pl-2">
+                <Link to={"/password-recovery"} className="text-sm text-gray-700 hover:text-[#0fa3b1] pl-2">
                   Forgot Password?
                 </Link>
               )}
             </div>
             {type === "login" && (
-              <div className="flex gap-3">
+              <div className="flex gap-1.5">
                 <input type="checkbox" className="mb-[-10px]" />
-                <span className="pt-6">Remember me</span>
-                <button
-        
-                  className='border-[2px] border-blue-500 rounded-md'>
-                  <div className='flex gap-[20px] items-center py-3 px-2'>
-                    <img
-                      className='w-[35px] h-[35px]'
-                      src='/Images/google_logo.png'
-                      alt='google-logo'
-                    />
-                    <span className='text-blue-400'>Continue with google</span>
-                  </div>
-                </button>
-                
-                
+                <span className="pt-2">Remember me</span>
               </div>
             )}
+
+            {type === "login" && (
+              <button
+                className='border-2 border-[#bee1e6] hover:border-[#0fa3b1] rounded-lg '>
+                <div className='flex gap-[20px] items-center py-3 px-2'>
+                  <img
+                    className='w-[35px] h-[35px]'
+                    src='/Images/google_logo.png'
+                    alt='google-logo'
+                  />
+                  <span className='text-[#0fa3b1]'>Continue with google</span>
+                </div>
+              </button>
+            )}
+            
             <input type="hidden" value={`${type}`} {...register("type", { required: "This field is required" })} />
-            <button className="border-1 px-32 bg-blue-700 rounded-md py-2 text-white">
+            <button className="px-32 text-white hover:bg-[#bee1e6] rounded-lg flex py-2 hover:text-[#0fa3b1] bg-[#0fa3b1] border-2 border-[#bee1e6] hover:border-[#0fa3b1]">
               {type === "login" ? "Login" : "Create Account"}
             </button>
             {type === "signup" && (
-              <span className="text-sm">
+              <span className="text-sm text-gray-700">
                 Already have an account?{" "}
-                <Link className="text-blue-400 pl-2" to={"/login"}>
+                <Link className="text-[#0fa3b1] pl-2 hover:text-gray-700" to={"/login"}>
                   Sign In
                 </Link>
               </span>
             )}
-            <p className='text-center text-blue-400'>
+            <p className='text-center text-[#0fa3b1] pb-10'>
                 &copy; 2023 CourseCraft. All rights reserved
               </p>
           </form>
