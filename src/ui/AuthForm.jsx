@@ -41,7 +41,10 @@ function Form({ type }) {
   return (
     <div className="min-h-screen bg-[#e1eaef] py-10">
       <div>
-        <img className='h-12' src='/Logos/coursecraft_logo.png' alt='Coursecraft' />
+        <Link to="/">
+          <img className="h-12" src="/Logos/coursecraft_logo.png" alt="Coursecraft" />
+        </Link>
+
       </div>
       <div className=" flex flex-col gap-2 justify-center mt-10">
         <div className="bg-[#bee1e6] rounded-3xl flex flex-col items-center w-[500px] m-auto gap-6 pt-5">
@@ -82,7 +85,7 @@ function Form({ type }) {
                 </label>
                 
                 <input
-                  className="border-2 py-2 px-4 rounded-md"
+                  className="border-2 py-2 px-4 rounded-md focus:outline-none focus:border-[#0fa3b1]"
                   type="text"
                   placeholder="Enter your Full Name"
                   id="fullName"
@@ -96,7 +99,7 @@ function Form({ type }) {
                   Department
                 </label>
                 <input
-                  className="border-2 py-2 px-4 rounded-md"
+                  className="border-2 py-2 px-4 rounded-md focus:outline-none focus:border-[#0fa3b1]"
                   type="text"
                   placeholder="Enter your department"
                   id="department"
@@ -110,7 +113,7 @@ function Form({ type }) {
                   Level
                 </label>
                 <select
-                  className="border-2 py-2 px-4 rounded-md"
+                  className="border-2 py-2 px-4 rounded-md focus:outline-none focus:border-[#0fa3b1]"
                   id="level"
                   {...register("level", { required: "This field is required" })}
                 >
@@ -125,7 +128,7 @@ function Form({ type }) {
                   Courses
                 </label>
                 <input
-                  className="border-2 py-2 px-4 rounded-md"
+                  className="border-2 py-2 px-4 rounded-md focus:outline-none focus:border-[#0fa3b1]"
                   type="text"
                   placeholder="Enter your courses"
                   id="courses"
@@ -139,7 +142,7 @@ function Form({ type }) {
                   Qualification
                 </label>
                 <input
-                  className="border-2 py-2 px-4 rounded-md"
+                  className="border-2 py-2 px-4 rounded-md focus:outline-none focus:border-[#0fa3b1]"
                   type="text"
                   placeholder="Enter your qualification"
                   id="qualification"
@@ -152,7 +155,8 @@ function Form({ type }) {
               <h1 className='text-[18px] text-gray-700'>Email</h1>
               </label>
               <input
-                className="border-2 py-2 px-4 rounded-md text-gray-700"
+                className="border-2 py-2 px-4 rounded-md text-gray-700 focus:outline-none focus:border-[#0fa3b1]"
+
                 type="email"
                 placeholder="Enter your email"
                 id="email"
@@ -164,7 +168,7 @@ function Form({ type }) {
               <h1 className='text-[18px] text-gray-700'>Password</h1>
               </label>
               <input
-                className="border-2 py-2 px-4 rounded-md mb-2 text-gray-700"
+                className="border-2 py-2 px-4 rounded-md mb-2 text-gray-700 focus:outline-none focus:border-[#0fa3b1]"
                 type="password"
                 placeholder="Enter your password"
                 autoComplete="username"
