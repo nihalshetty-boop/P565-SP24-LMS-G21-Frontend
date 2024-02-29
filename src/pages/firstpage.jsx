@@ -20,12 +20,14 @@ function FirstPage() {
           </nav>
           <main className='pl-[50px] py-[50px] mt-[200px] flex gap-[30px]'>
             <div className='flex flex-col gap-[35px]'>
-              <h1 className='text-[90px] text-gray-700' style={{ lineHeight: '120px' }}>
-                Elevate your learning journey with <br />
+
+              <h1 className='text-[100px] text-gray-700' style={{ lineHeight: '120px' }}>
+                Elevate your learning journey with 
                 <span className='text-[#0fa3b1]'> CourseCraft</span>
               </h1>
               <p className='text-gray-600' style={{ lineHeight: '30px' }}>
-                Get access to your academic progress, course modules, study material, and the latest announcements on CourseCraft.
+                Get access to your academic progress, course modules, study
+                material, and the latest announcements on CourseCraft.
               </p>
               <Link to="/signup">
                 <button className='px-6 py-2 bg-[#0fa3b1] rounded-md text-white hover:bg-[#bee1e6] hover:text-[#0fa3b1] hover:border-2 border-[#0fa3b1]'>
@@ -33,6 +35,7 @@ function FirstPage() {
                 </button>
               </Link>
             </div>
+
           </main> 
           <div className='mt-[100px] bg-[#bee1e6] pt-5 pb-10 border-4 border-[#0fa3b1]'>
             <h1 className='text-[25px] text-gray-700 flex justify-center underline md:underline-offset-4 mb-5'> Feedback </h1>
@@ -62,6 +65,8 @@ function FirstPage() {
               className="px-4 py-2 rounded-md bg-[#0fa3b1] rounded-md text-white hover:bg-[#bee1e6] hover:text-[#0fa3b1] hover:border-2 border-[#0fa3b1] cursor-pointer ml-[400px]"
             />
           </div>
+          </main>
+
         </div>
         
       );
