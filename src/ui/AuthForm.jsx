@@ -3,15 +3,15 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useSignup } from "../features/authentication/useSignup";
 import { useLogin } from "../features/authentication/useLogin";
+import { useGoogleAuth } from "../features/authentication/useGoogleAuth";
 
 function Form({ type }) {
   const [student, setStudent] = useState(true);
   const [instructor, setInstructor] = useState(false);
-  const { signUp, isLoading: isLoadingSingUp } = useSignup();
-  const { login, isLoading: isLoadingLogin } = useLogin();
+  //const { signUp, isLoading: isLoadingSingUp } = useSignup();
   const { register, handleSubmit, setValue, reset } = useForm();
 
-  const onSubmitSignup = (data) => {
+  /*const onSubmitSignup = (data) => {
     const signUpData = {
       email: data.email,
       password: data.password,
@@ -22,18 +22,21 @@ function Form({ type }) {
       ...(instructor && { instructorData: { level: data.level, qualification: data.qualification, courses: data.courses } })
     };
 
-    signUp(signUpData, {
+    useSignup(signUpData, { 
       onSuccess: reset,
     });
+  };*/
+  
+  const onSubmitSignup = ({ email, password }) => {
+    useSignup(email, password);
   };
 
+  function handleGoogleAuth() {
+    useGoogleAuth();
+  }
+
   const onSubmitLogin = ({ email, password }) => {
-    login(
-      { email, password },
-      {
-        onSuccess: reset,
-      }
-    );
+    useLogin(email, password);
   };
 
   const onSubmit = type === "login" ? onSubmitLogin : onSubmitSignup;
@@ -187,9 +190,10 @@ function Form({ type }) {
                 <span className="pt-2">Remember me</span>
               </div>
             )}
-
+              
             {type === "login" && (
               <button
+                onClick={handleGoogleAuth}
                 className='border-2 border-[#bee1e6] hover:border-[#0fa3b1] rounded-lg '>
                 <div className='flex gap-[20px] items-center py-3 px-2'>
                   <img
@@ -203,7 +207,9 @@ function Form({ type }) {
             )}
             
             <input type="hidden" value={`${type}`} {...register("type", { required: "This field is required" })} />
-            <button className="px-32 text-white hover:bg-[#bee1e6] rounded-lg flex py-2 hover:text-[#0fa3b1] bg-[#0fa3b1] border-2 border-[#bee1e6] hover:border-[#0fa3b1]">
+            <button 
+              onClick={onSubmit}
+              className="px-32 text-white hover:bg-[#bee1e6] rounded-lg flex py-2 hover:text-[#0fa3b1] bg-[#0fa3b1] border-2 border-[#bee1e6] hover:border-[#0fa3b1]">
               {type === "login" ? "Login" : "Create Account"}
             </button>
             {type === "signup" && (
