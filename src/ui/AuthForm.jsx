@@ -212,6 +212,14 @@ function Form({ type }) {
               className="px-32 text-white hover:bg-[#bee1e6] rounded-lg flex py-2 hover:text-[#0fa3b1] bg-[#0fa3b1] border-2 border-[#bee1e6] hover:border-[#0fa3b1]">
               {type === "login" ? "Login" : "Create Account"}
             </button>
+            {type === "login" && (
+              <span className="text-sm text-gray-700">
+                New to CourseCraft?{" "}
+                <Link className="text-[#0fa3b1] pl-2 hover:text-gray-700" to={"/signup"}>
+                  Create Account
+                </Link>
+              </span>
+            )}
             {type === "signup" && (
               <span className="text-sm text-gray-700">
                 Already have an account?{" "}
