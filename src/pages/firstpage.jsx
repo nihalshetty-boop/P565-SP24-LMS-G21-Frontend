@@ -65,8 +65,6 @@ function FirstPage() {
               className="px-4 py-2 rounded-md bg-[#0fa3b1] rounded-md text-white hover:bg-[#bee1e6] hover:text-[#0fa3b1] hover:border-2 border-[#0fa3b1] cursor-pointer ml-[400px]"
             />
           </div>
-          </main>
-
         </div>
         
       );
