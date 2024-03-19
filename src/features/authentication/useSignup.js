@@ -1,11 +1,15 @@
 import { FirebaseApp } from '../../lib/helper/firebaseClient';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserDocument } from '../../lib/helper/firebaseClient';
 
 export async function useSignup(e, p) {
     let auth = getAuth(FirebaseApp);
-    createUserWithEmailAndPassword(auth, e, p)
-    .then((userCredential) => {
+    const { e, p, Name, Level, Year, Courses, Description} = this.state;
+
+    createUserWithEmailAndPassword(auth, e, p, Name, Level, Year, Courses, Description)
+    .then(async (userCredential) => {
         console.log(userCredential.user);
+        await createUserDocument(e, Name, Level, Year, Courses, Description);
         return userCredential.user;
     }).catch((error) => {
         // Handle Errors here.

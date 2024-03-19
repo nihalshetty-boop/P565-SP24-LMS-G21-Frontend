@@ -5,7 +5,7 @@ import FirstPage from './pages/firstpage.jsx';
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import PasswordRecovery from "./pages/passwordrecovery";
-import { supabase } from './lib/helper/supabaseClient';
+//import { supabase } from './lib/helper/supabaseClient';
 
 
 function App() {
