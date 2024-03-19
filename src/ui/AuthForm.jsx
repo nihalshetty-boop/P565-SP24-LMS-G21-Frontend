@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useSignup } from "../features/authentication/useSignup";
 import { useLogin } from "../features/authentication/useLogin";
@@ -10,6 +10,7 @@ function Form({ type }) {
   const [instructor, setInstructor] = useState(false);
   //const { signUp, isLoading: isLoadingSingUp } = useSignup();
   const { register, handleSubmit, setValue, reset } = useForm();
+  const navigate = useNavigate();
 
   /*const onSubmitSignup = (data) => {
     const signUpData = {
@@ -27,16 +28,18 @@ function Form({ type }) {
     });
   };*/
   
-  const onSubmitSignup = ({ email, password }) => {
-    useSignup(email, password);
+  const onSubmitSignup = ({ email, password, fullName, department, type, level, courses, qualification }) => {
+    useSignup(email, password, fullName, department, type, level, courses, qualification);
   };
 
   function handleGoogleAuth() {
-    useGoogleAuth();
-  }
+    let uid = useGoogleAuth();
+    navigate('/Dashboard/id=' + uid);
+  };
 
   const onSubmitLogin = ({ email, password }) => {
-    useLogin(email, password);
+    let uid = useLogin(email, password);
+    navigate('/Dashboard/id=' + uid);
   };
 
   const onSubmit = type === "login" ? onSubmitLogin : onSubmitSignup;

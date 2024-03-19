@@ -1,32 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useForgotPassword } from "../features/authentication/useForgotPassword";
+
 
 function PasswordRecovery() {
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
-  const [otpSent, setOtpSent] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(120); // 120 seconds = 2 minutes
-
-  useEffect(() => {
-    let interval;
-    if (otpSent && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft((timeLeft) => timeLeft - 1);
-      }, 1000);
-    }
-
-    return () => clearInterval(interval);
-  }, [otpSent, timeLeft]);
+  const [emailSent, setEmailSent] = useState(false);
 
   function onSubmit({ email }) {
     console.log(email);
     // Here you would send the OTP to the user's email
-    setOtpSent(true);
+    useForgotPassword(email);
+    setEmailSent(true);
     reset(); // Resets the form after submission
-  }
-
-  function onOtpSubmit({ otp }) {
-    console.log(otp);
-    // Here you would verify the OTP
   }
 
   return (
@@ -44,28 +30,12 @@ function PasswordRecovery() {
         <button 
         type='submit' 
         className='w-full py-2 bg-[#0fa3b1] text-white rounded-lg border-2 border-[#bee1e6] hover:bg-[#bee1e6] hover:text-[#0fa3b1] hover:border-[#0fa3b1] flex justify-center items-center transition-colors duration-300'>
-        Send OTP
+        Send Password Reset Email
         </button>
-
     
-        {otpSent && (
+        {emailSent && (
           <div className='mt-4'>
-            <p className='text-lg'>Please enter the OTP you received:</p>
-            <input
-              type='text'
-              className='w-full p-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-[#0fa3b1] transition-colors'
-              placeholder='Enter OTP'
-              {...register("otp", {required: "OTP is required"})}
-            />
-            {errors.otp && <p className='text-red-500 text-sm mt-1'>{errors.otp.message}</p>}
-            <p className='mt-2'>Time remaining to enter OTP: {timeLeft} seconds</p>
-            <button 
-            type='button' 
-            className='w-full py-2 bg-[#0fa3b1] text-white rounded-lg border-2 border-[#bee1e6] hover:bg-[#bee1e6] hover:text-[#0fa3b1] hover:border-[#0fa3b1] flex justify-center items-center transition-colors duration-300' 
-            onClick={handleSubmit(onOtpSubmit)}>
-            Verify OTP
-            </button>
-
+            <p className='text-lg'>Reset Email Sent</p>
           </div>
         )}
       </form>
