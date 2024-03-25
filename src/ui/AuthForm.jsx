@@ -1,9 +1,17 @@
+
 import React, { useState } from "react";
+// import { toast } from 'react-toastify';
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useSignup } from "../features/authentication/useSignup";
 import { useLogin } from "../features/authentication/useLogin";
 import { useGoogleAuth } from "../features/authentication/useGoogleAuth";
+// import { signup } from "../features/authentication/signup";
+// import { login } from "../features/authentication/login";
+
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { db } from '../lib/helper/firebaseClient';
+
 
 function Form({ type }) {
   const [student, setStudent] = useState(true);
@@ -28,19 +36,106 @@ function Form({ type }) {
     });
   };*/
   
-  const onSubmitSignup = ({ email, password, fullName, department, type, level, courses, qualification }) => {
-    useSignup(email, password, fullName, department, type, level, courses, qualification);
+  const onSubmitSignup = async (formData) => {
+    try {
+      // Destructure the necessary fields if needed or pass the whole formData
+      const { email, password, fullName, department, level, qualification } = formData;
+      // Wait for the signup to complete
+      const userCredential = await useSignup(email, password, fullName, department, level, qualification);
+      // On successful signup, you can navigate to dashboard or do other actions
+      // ...
+      // toast.success('Your account is created! Please login to proceed.');
+      navigate('/login');
+    } catch (error) {
+      // Handle the error, maybe show an error message to the user
+      console.error(error.code, error.message);
+    }
   };
+
+  // function handleGoogleAuth() {
+  //   let userCredential = useGoogleAuth();
+  //   console.log(userCredential);
+  //   navigate('/dashboard');
+  // };
 
   function handleGoogleAuth() {
-    let uid = useGoogleAuth();
-    navigate('/Dashboard/id=' + uid);
-  };
 
-  const onSubmitLogin = ({ email, password }) => {
-    let uid = useLogin(email, password);
-    navigate('/Dashboard/id=' + uid);
+    // Assuming useGoogleAuth returns a promise that resolves with the user's credentials
+    useGoogleAuth()
+      .then((userCredential) => {
+        console.log(userCredential);
+        navigate('/dashboard');
+      })
+      .catch((error) => {
+        console.error('Google authentication error:', error);
+      });
+  }
+
+  // const onSubmitLogin = async ({ email, password }) => {
+  //   try {
+  //     const userCredential = await useLogin(email, password);
+  
+  //     // You need to check the user's role here. This usually involves
+  //     // fetching the user's profile from your database where the role is stored.
+  //     // The following is a placeholder for the logic you would use.
+    
+  //     const userProfile = userCredential.user.uid;
+  //      // Assuming role is a property on the profile
+  //     console.log(userCredential);
+  
+  //     if(qualification === undefined) {
+  //       // Navigate to the Dashboard
+  //       navigate('/Dashboard');
+  //     } else {
+  //       // Navigate to a instructor dashboard, or handle differently
+  //       navigate('/instructor-dashboard');
+  //     }
+  
+  //   } catch (error) {
+  //     console.error(error.code, error.message);
+  //     // Show an error message to the user
+  //     // Consider setting an error state and displaying it in your UI
+  //   }
+  // };
+  
+  
+  const onSubmitLogin = async ({ email, password }) => {
+    try {
+      const userCredential = await useLogin(email, password);
+      const uid = userCredential.user.uid;
+  
+      // Assuming getUserRole fetches the user document which includes a 'qualification' field for faculty
+      const userDoc = await getUserRole(uid);
+  
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        // Check if 'qualification' exists and navigate accordingly
+        const isFaculty = userData.qualification && userData.qualification.trim() !== "";
+  
+        navigate(isFaculty ? '/instructor-dashboard' : '/dashboard');
+      } else {
+        throw new Error('User data not found.');
+      }
+    } catch (error) {
+      console.error(error.code, error.message);
+      // Show an error message to the user
+    }
   };
+  
+  async function getUserRole(uid) {
+    // Example: Checking both 'students' and 'faculty' collections to find out the role
+    let userDocRef = doc(db, "students", uid);
+    let userDocSnap = await getDoc(userDocRef);
+  
+    if (!userDocSnap.exists()) {
+      // If not found in 'students', check 'faculty'
+      userDocRef = doc(db, "faculty", uid);
+      userDocSnap = await getDoc(userDocRef);
+    }
+  
+    return userDocSnap;
+  }
+  
 
   const onSubmit = type === "login" ? onSubmitLogin : onSubmitSignup;
 
@@ -100,19 +195,23 @@ function Form({ type }) {
               </div>
             )}
             {type === "signup" && (
-              <div className="flex flex-col">
-                <label className="pl-1 text-[17px] text-gray-700" htmlFor="department">
-                  Department
-                </label>
-                <input
-                  className="border-2 py-2 px-4 rounded-md focus:outline-none focus:border-[#0fa3b1]"
-                  type="text"
-                  placeholder="Enter your department"
-                  id="department"
-                  {...register("department", { required: "This field is required" })}
-                />
-              </div>
-            )}
+  <div className="flex flex-col">
+    <label className="pl-1 text-[17px] text-gray-700" htmlFor="department">
+      Department
+    </label>
+    <select
+      className="border-2 py-2 px-4 rounded-md focus:outline-none focus:border-[#0fa3b1]"
+      id="department"
+      {...register("department", { required: "This field is required" })}
+    >
+      <option value="">Select your department</option>
+      <option value="CS">Computer Science</option>
+      <option value="DS">Data Science</option>
+      <option value="HCI">Human-Computer Interaction</option>
+      <option value="IS">Information Systems</option>
+    </select>
+  </div>
+)}
             {type === "signup" && (
               <div className="flex flex-col">
                 <label className="pl-1 text-[17px] text-gray-700" htmlFor="level">
@@ -128,32 +227,23 @@ function Form({ type }) {
                 </select>
               </div>
             )}
-            {type === "signup" && (
-              <div className="flex flex-col">
-                <label className="pl-1 text-[17px] text-gray-700" htmlFor="courses">
-                  Courses
-                </label>
-                <input
-                  className="border-2 py-2 px-4 rounded-md focus:outline-none focus:border-[#0fa3b1]"
-                  type="text"
-                  placeholder="Enter your courses"
-                  id="courses"
-                  {...register("courses", { required: "This field is required" })}
-                />
-              </div>
-            )}
+            
             {type === "signup" && instructor && (
               <div className="flex flex-col">
                 <label className="pl-1 text-[17px] text-gray-700" htmlFor="qualification">
                   Qualification
                 </label>
-                <input
+                
+                  <select
                   className="border-2 py-2 px-4 rounded-md focus:outline-none focus:border-[#0fa3b1]"
-                  type="text"
-                  placeholder="Enter your qualification"
                   id="qualification"
                   {...register("qualification", { required: "This field is required" })}
-                />
+                >
+                  <option value="">Select your qualification</option>
+                  <option value="Undergraduate">Undergraduate</option>
+                  <option value="Graduate">Graduate</option>
+                  <option value="PHD">PHD</option>
+                </select>
               </div>
             )}
             <div className="flex flex-col">
@@ -211,9 +301,9 @@ function Form({ type }) {
             
             <input type="hidden" value={`${type}`} {...register("type", { required: "This field is required" })} />
             <button 
-              onClick={onSubmit}
-              className="px-32 text-white hover:bg-[#bee1e6] rounded-lg flex py-2 hover:text-[#0fa3b1] bg-[#0fa3b1] border-2 border-[#bee1e6] hover:border-[#0fa3b1]">
-              {type === "login" ? "Login" : "Create Account"}
+          type="submit"
+          className="px-32 text-white hover:bg-[#bee1e6] rounded-lg flex py-2 hover:text-[#0fa3b1] bg-[#0fa3b1] border-2 border-[#bee1e6] hover:border-[#0fa3b1]">
+            {type === "login" ? "Login" : "Create Account"}
             </button>
             {type === "login" && (
               <span className="text-sm text-gray-700">
