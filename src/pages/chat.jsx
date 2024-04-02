@@ -1,44 +1,68 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
+import { FirebaseApp } from "../lib/helper/firebaseClient";
+import { db } from "../lib/helper/firebaseClient";
+import { addDoc, collection, onSnapshot, orderBy, query, limit, serverTimestamp } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
+const auth = getAuth(FirebaseApp);
 
+const VapidKey = "BC0GtCYQzxxp4Y-HFrsQprkxb98-5BrQAHF13TLRf1_-lo8KkPQhSxjZnywU0sYtTA5dRGB_uW_X9h-5kzuCZek";
 
-// TODO: Replace the following with your app's Firebase project configuration
-// See: https://firebase.google.com/docs/web/learn-more#config-object
-const firebaseConfig = {
-  // ...
-};
-
-// Initialize Firebase
-
-
-
-// Initialize Firebase Cloud Messaging and get a reference to the service
-
-function CourseChat({ messages }) {
-  // Sample messages array for testing
-  const sampleMessages = [
-    { id: 1, sender: 'Alice', content: 'Hello there!' },
-    { id: 2, sender: 'Bob', content: 'Hi Alice!' },
-    { id: 3, sender: 'Alice', content: 'How are you?' },
-    { id: 4, sender: 'Bob', content: 'I\'m good, thanks!' }
-  ];
-
-  // Use messages from props if available, otherwise use an empty array
-  const messagesToDisplay = messages || sampleMessages;
-
+function CourseChat() {
+  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const scroll = useRef();
 
-  const handleSendMessage = () => {
-    // Logic for sending a new message
-    // This can be implemented based on your requirements
-    console.log('New message:', newMessage);
-    // Clear the text input after sending the message
-    setNewMessage('');
+  useEffect(() => {
+    const q = query(
+      collection(db, "messages"),
+      orderBy("createdAt", "desc"),
+      limit(50)
+    );
+
+    const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
+      const fetchedMessages = [];
+      QuerySnapshot.forEach((doc) => {
+        fetchedMessages.push({ ...doc.data(), id: doc.id });
+      });
+      const sortedMessages = fetchedMessages.sort(
+        (a, b) => a.createdAt - b.createdAt
+      );
+      setMessages(sortedMessages);
+      // Scroll to the bottom when new messages arrive
+      if (scroll.current) {
+        scroll.current.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleSendMessage = async () => {
+    if (newMessage.trim() === "") {
+      alert("Enter valid message");
+      return;
+    }
+
+    const { uid, displayName, photoURL } = auth.currentUser;
+
+    try {
+      await addDoc(collection(db, "messages"), {
+        text: newMessage,
+        name: displayName,
+        avatar: photoURL,
+        createdAt: serverTimestamp(),
+        uid,
+      });
+      setNewMessage("");
+    } catch (error) {
+      console.error("Error sending message:", error);
+      // Handle error gracefully, e.g., show error message to the user
+    }
   };
 
   const handleKeyPress = (e) => {
     // Check if Enter key is pressed
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSendMessage();
     }
   };
@@ -55,18 +79,17 @@ function CourseChat({ messages }) {
       <h2 style={{
         fontSize: '1.5rem',
         marginBottom: '20px'
-      }}>Course Chat</h2>
-      <ul style={{
-        listStyleType: 'none',
-        padding: '0'
-      }}>
-        {messagesToDisplay.map(message => (
-          <li key={message.id} style={{ marginBottom: '10px' }}>
-            <strong style={{ fontWeight: 'bold', marginRight: '5px' }}>{message.sender}:</strong> 
-            <span style={{ display: 'inline-block' }}>{message.content}</span>
-          </li>
+      }}>University wide Chat</h2>
+      <div className="messages-wrapper">
+        {messages.map((message) => (
+          <div key={message.id} style={{ marginBottom: '10px' }}>
+            <strong style={{ fontWeight: 'bold', marginRight: '5px' }}>{message.name}:</strong> 
+            <span style={{ display: 'inline-block' }}>{message.text}</span>
+          </div>
         ))}
-      </ul>
+        {/* Dummy element for scrolling to bottom */}
+        <span ref={scroll}></span>
+      </div>
       {/* Text input for new message */}
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <input
