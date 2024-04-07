@@ -1,36 +1,3 @@
-// import React from 'react';
-// import { Routes, Route } from 'react-router-dom';
-// import SubjectCard from './SubjectCard';
-// import SubjectDetails from './SubjectDetails';
-
-// function Dashboard() {
-//   return (
-//     <div className="min-h-screen bg-[#e1eaef]">
-//       <nav className='flex pr-8 pt-5 shadow-sm justify-between items-center'>
-//         <img className='h-10 max-w-48 mx-5' src='/Logos/coursecraft_logo.png' alt='Coursecraft' />
-//         <div className="flex items-center">
-//           <img className='h-10 w-10' src='/Logos/default_pfp.png' alt='Coursecraft' />
-//           <div className="text-[#0fa3b1] text-[20px] font-bold tracking-wide mx-10">Rohith</div>
-//         </div>
-//       </nav>
-//       <div className="md:container md:mx-auto my-10 grid grid-cols-3 gap-4">
-//         {/* Links act as the trigger for navigation on click */}
-//         <SubjectCard title="Applied Algorithms" subjectId="applied-algorithms" />
-//         <SubjectCard title="Software Engineering" subjectId="software-engineering" />
-//         <SubjectCard title="Data Mining" subjectId="data-mining" />
-//       </div>
-    
-//       <Routes>
-//         <Route path="/subject/:subjectId" element={<SubjectDetails />} />
-//       </Routes>
-//     </div>
-//   );
-// }
-
-// export default Dashboard;
-
-
-
 import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import SubjectCard from './SubjectCard';
