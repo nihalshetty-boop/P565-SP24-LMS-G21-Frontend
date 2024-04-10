@@ -37,11 +37,26 @@ function Form({ type }) {
   };*/
   
   const onSubmitSignup = async (formData) => {
+    // constructor(props) {
+    //   super(props);
+    //   this.state={
+    //     email: '',
+    //     password: '',
+    //     fullName: '',
+    //     department: '',
+    //     level: '',
+    //     qualification: '',
+    //     phoneno: '',
+    //     verifybutton: false,
+    //     verifyotp: false,
+    // };
+    // this.handleSubmit = this.handleSubmit.bind(this);
+    // }
     try {
       // Destructure the necessary fields if needed or pass the whole formData
-      const { email, password, fullName, department, level, qualification } = formData;
+      const { email, password, fullName, department, level, qualification, phoneno } = formData;
       // Wait for the signup to complete
-      const userCredential = await useSignup(email, password, fullName, department, level, qualification);
+      const userCredential = await useSignup(email, password, fullName, department, level, qualification, phoneno);
       // On successful signup, you can navigate to dashboard or do other actions
       // ...
       // toast.success('Your account is created! Please login to proceed.');
@@ -112,7 +127,8 @@ function Form({ type }) {
         // Check if 'qualification' exists and navigate accordingly
         const isFaculty = userData.qualification && userData.qualification.trim() !== "";
   
-        navigate(isFaculty ? '/instructor-dashboard' : '/dashboard');
+        //navigate(isFaculty ? '/instructor-dashboard' : '/dashboard');
+        navigate('/DuoAuthPage');
       } else {
         throw new Error('User data not found.');
       }
@@ -259,6 +275,21 @@ function Form({ type }) {
                 {...register("email", { required: "This field is required" })}
               />
             </div>
+            {type === "signup" && (
+            <div className="flex flex-col">
+              <label className="pl-1 text-gray-500" htmlFor="phoneno">
+              <h1 className='text-[18px] text-gray-700'>Phone No.</h1>
+              </label>
+              <input
+                className="border-2 py-2 px-4 rounded-md text-gray-700 focus:outline-none focus:border-[#0fa3b1]"
+
+                type="phoneno"
+                placeholder="Enter your Phone Number"
+                id="phoneno"
+                {...register("phoneno", { required: "This field is required" })}
+              />
+            </div>
+            )}
             <div className="flex flex-col">
               <label className="pl-1 text-gray-500" htmlFor="password">
               <h1 className='text-[18px] text-gray-700'>Password</h1>

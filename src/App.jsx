@@ -5,6 +5,8 @@ import FirstPage from './pages/firstpage.jsx';
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import PasswordRecovery from "./pages/passwordrecovery";
+import DuoAuthPage from "./pages/DuoAuthPage.jsx";
+import DuoAuth from "./pages/DuoAuth.jsx";
 // import DuoAuthPage from "./features/authentication/DuoAuthPage.jsx";
 import Dashboard from './pages/Dashboard';
 import SubjectDetails from './pages/SubjectDetails';
@@ -23,11 +25,10 @@ function App() {
         <Route path='login' element={<Login />} />
         <Route path='signup' element={<Signup />} />
         <Route path='password-recovery' element={<PasswordRecovery />} />
-        {/* <Route path='DuoAuthPage' element={<DuoAuthPage />} /> */}
+        {<Route path='DuoAuthPage' element={<DuoAuthPage />} /> }
+        {<Route path='DuoAuth' element={<DuoAuth />} /> }
         <Route path="dashboard/*" element={<Dashboard/>} />
         <Route path="/subject/:subjectId" element={<SubjectDetails />} />
-
-    
         <Route path="instructor-dashboard/*" element={<InstructorDashboard/>} />
         {/* <Route path="/Announcements" element={<Announcements/>} />
         <Route path="/Assignments" element={<AssignmentList/>} />

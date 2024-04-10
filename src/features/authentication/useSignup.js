@@ -3,7 +3,7 @@ import { FirebaseApp, db } from '../../lib/helper/firebaseClient';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 
-export async function useSignup(email, password, fullName, department, level, qualification) {
+export async function useSignup(email, password, fullName, department, level, qualification, phoneno) {
     const auth = getAuth(FirebaseApp);
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
@@ -14,7 +14,8 @@ export async function useSignup(email, password, fullName, department, level, qu
                 Level: level,
                 Name: fullName,
                 email: email,
-                department: department
+                department: department,
+                phoneno: phoneno
             });
         }
         else { //If instrcutor
@@ -24,7 +25,8 @@ export async function useSignup(email, password, fullName, department, level, qu
                 Name: fullName,
                 email: email,
                 department: department,
-                qualification: qualification
+                qualification: qualification,
+                phoneno: phoneno
             });
         }
 
