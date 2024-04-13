@@ -24,9 +24,18 @@ function SubjectDetails() {
     navigate(`/assignments/${assignmentId}`);
   };
 
+  const handleChatClick = () => {
+    navigate(`/subject/${subjectId}/chat`);
+  };
+
   return (
     <div className="flex flex-col items-center justify-center w-screen h-screen bg-[#e1eaef]">
       <div className="w-full h-full p-6 rounded-lg bg-white shadow-xl">
+        {/* Button to navigate to course chat */}
+        <button onClick={handleChatClick} className="absolute top-4 right-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+          Go to Course Chat
+        </button>
+
         <h2 className="text-2xl font-bold text-center text-[#0fa3b1] mb-6">
           {subjectId.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
         </h2>

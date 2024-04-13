@@ -48,7 +48,7 @@ function App() {
         <Route path="/course/:courseId" element={<CourseDetails />} />
         
         <Route path="manage-courses/:subjectId" element={<ManageCourses />} />
-        <Route path="chat" element={<CourseChat />} />
+        <Route path="/subject/:subjectId/chat" element={<CourseChat />} />
 
         <Route path="/manage-courses/:subjectId/edit/:assignmentId" element={<EditAssignment />} />
   <Route path="/manage-courses/:subjectId/delete/:assignmentId" element={<DeleteAssignment />} />
