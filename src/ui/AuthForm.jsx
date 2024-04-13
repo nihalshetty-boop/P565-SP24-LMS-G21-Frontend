@@ -11,11 +11,15 @@ import { useGoogleAuth } from "../features/authentication/useGoogleAuth";
 
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../lib/helper/firebaseClient';
+import { setIsFaculty } from '../lib/helper/userInfo';
+
 
 
 function Form({ type }) {
   const [student, setStudent] = useState(true);
   const [instructor, setInstructor] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
   //const { signUp, isLoading: isLoadingSingUp } = useSignup();
   const { register, handleSubmit, setValue, reset } = useForm();
   const navigate = useNavigate();
@@ -45,44 +49,36 @@ function Form({ type }) {
       // On successful signup, you can navigate to dashboard or do other actions
       // ...
       // toast.success('Your account is created! Please login to proceed.');
-      navigate('/login');
+      setShowPopup(true); // Show the popup on successful signup
+      setTimeout(() => {
+        setShowPopup(false); // Close the popup after 3 seconds
+        navigate('/login'); // Navigate to login page
+      }, 3000);
+      // navigate('/login');
     } catch (error) {
       // Handle the error, maybe show an error message to the user
       console.error(error.code, error.message);
     }
-  };
-
+  };  
   // function handleGoogleAuth() {
   //   let userCredential = useGoogleAuth();
   //   console.log(userCredential);
   //   navigate('/dashboard');
   // };
 
-  async function handleGoogleAuth() {
-    try {
-      // Assuming useGoogleAuth returns a promise that resolves with the user's credentials
-      const userCredential = await useGoogleAuth();
-      console.log(userCredential);
-  
-      // Now awaiting the getUserRole call
-      const userDoc = await getUserRole(userCredential.user.uid);
-  
-      // Check if the document exists using the appropriate method for your database
-      if (userDoc.exists) { // Or any other appropriate check for your database
-        const userData = userDoc.data();
-        // Check if 'qualification' exists and navigate accordingly
-        const isFaculty = userData.qualification && userData.qualification.trim() !== "";
-  
-        navigate(isFaculty ? '/instructor-dashboard' : '/dashboard'); // Ensure path is correct
-      } else {
-        throw new Error('User data not found.');
-      }
-    } catch (error) {
-      console.error('Google authentication error:', error);
-    }
+  function handleGoogleAuth() {
+
+    // Assuming useGoogleAuth returns a promise that resolves with the user's credentials
+    useGoogleAuth()
+      .then((userCredential) => {
+        console.log(userCredential);
+        setUID(userCredential.user.uid);
+        navigate('/dashboard');
+      })
+      .catch((error) => {
+        console.error('Google authentication error:', error);
+      });
   }
-  
-  
 
   // const onSubmitLogin = async ({ email, password }) => {
   //   try {
@@ -124,13 +120,18 @@ function Form({ type }) {
         const userData = userDoc.data();
         // Check if 'qualification' exists and navigate accordingly
         const isFaculty = userData.qualification && userData.qualification.trim() !== "";
-  
-        navigate(isFaculty ? '/instructor-dashboard' : '/Dashboard');
+        setIsFaculty(isFaculty);
+
+        navigate(isFaculty ? '/instructor-dashboard' : '/dashboard');
       } else {
         throw new Error('User data not found.');
       }
     } catch (error) {
+
       console.error(error.code, error.message);
+      console.error(error.code, error.message);
+      setErrorMessage("Invalid credentials, please try again."); // Customize the message based on error.code if needed
+      setShowErrorPopup(true);
       // Show an error message to the user
     }
   };

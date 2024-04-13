@@ -4,6 +4,7 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 
 export async function useSignup(email, password, fullName, department, level, qualification) {
+    // const courses = [];
     const auth = getAuth(FirebaseApp);
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
@@ -14,7 +15,8 @@ export async function useSignup(email, password, fullName, department, level, qu
                 Level: level,
                 Name: fullName,
                 email: email,
-                department: department
+                department: department,
+                courses: []
             });
         }
         else { //If instrcutor
@@ -24,7 +26,8 @@ export async function useSignup(email, password, fullName, department, level, qu
                 Name: fullName,
                 email: email,
                 department: department,
-                qualification: qualification
+                qualification: qualification,
+                courses: []
             });
         }
 

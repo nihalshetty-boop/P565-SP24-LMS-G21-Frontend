@@ -13,4 +13,10 @@ const firebaseConfig = {
 
 export const FirebaseApp = initializeApp(firebaseConfig);
 export const db = getFirestore(FirebaseApp);
-export const messaging = getMessaging(FirebaseApp)
+export const messaging = getMessaging(FirebaseApp);
+
+export let uid;
+
+export function setUID(newUID){
+  uid = newUID;
+}

@@ -7,7 +7,7 @@ function SubjectCard({ title, subjectId }) {
   const navigate = useNavigate();
   
   const handleClick = () => {
-    navigate(`/subject/${subjectId}`);
+    // navigate(`/subject/${subjectId}`);
   };
 
   return (
