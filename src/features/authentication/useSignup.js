@@ -4,24 +4,22 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 
 export async function useSignup(email, password, fullName, department, level, qualification) {
-    // const courses = [];
-    const auth = getAuth(FirebaseApp);
-    createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-        console.log(userCredential.user);
+    try {
+        const auth = getAuth(FirebaseApp);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-         if(qualification === undefined) { //must be student
-            setDoc(doc(db, "students", userCredential.user.uid), {
+        if (qualification === undefined) {
+            // must be student
+            await setDoc(doc(db, "students", userCredential.user.uid), {
                 Level: level,
                 Name: fullName,
                 email: email,
                 department: department,
                 courses: []
             });
-        }
-        else { //If instrcutor
-    
-            setDoc(doc(db, "faculty", userCredential.user.uid), {
+        } else {
+            // If instructor
+            await setDoc(doc(db, "faculty", userCredential.user.uid), {
                 Level: level,
                 Name: fullName,
                 email: email,
@@ -31,11 +29,10 @@ export async function useSignup(email, password, fullName, department, level, qu
             });
         }
 
-
-        return userCredential.user;
-    }).catch((error) => {
-        // Handle Errors here.
-        console.log(error.code);
-        console.log(error.message);
-    })
+        return userCredential.user; // Return user object if signup is successful
+    } catch (error) {
+        // Handle Errors here and return error message
+        console.error(error.code, error.message);
+        return error.message;
+    }
 }

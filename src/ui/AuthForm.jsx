@@ -20,6 +20,7 @@ function Form({ type }) {
   const [instructor, setInstructor] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   //const { signUp, isLoading: isLoadingSingUp } = useSignup();
   const { register, handleSubmit, setValue, reset } = useForm();
   const navigate = useNavigate();
@@ -56,6 +57,7 @@ function Form({ type }) {
       }, 3000);
       // navigate('/login');
     } catch (error) {
+      
       // Handle the error, maybe show an error message to the user
       console.error(error.code, error.message);
     }
@@ -72,7 +74,7 @@ function Form({ type }) {
     useGoogleAuth()
       .then((userCredential) => {
         console.log(userCredential);
-        setUID(userCredential.user.uid);
+        // setUID(userCredential.user.uid);
         navigate('/dashboard');
       })
       .catch((error) => {
@@ -327,6 +329,23 @@ function Form({ type }) {
                 </Link>
               </span>
             )}
+                        <div className="text-[#16a34a]"> 
+              {showPopup && (
+                <div className="popup-backdrop">
+                  <div className="popup-content text-[#16a34a]">
+                    <p>Your account has been created successfully!</p>
+                    {/* <button onClick={() => setShowPopup(false)}>Ok</button> */}
+                  </div>
+                </div>
+              )}
+              {showErrorPopup && (
+                <div className="popup-backdrop">
+                  <div className="popup-content text-[#dc2626]">
+                    <p>{errorMessage}</p>
+                  </div>
+                </div>
+              )}
+            </div>
             {type === "signup" && (
               <span className="text-sm text-gray-700">
                 Already have an account?{" "}
