@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore'; // Import arrayUnion
 import { db } from '../lib/helper/firebaseClient';
+import CourseEnroll from '../features/courses/courseEnrollment';
+import { getAuth } from 'firebase/auth'; // Import getAuth
 
 function CourseDetails() {
   const { courseId } = useParams();
   const [courseDetails, setCourseDetails] = useState(null);
   const [studentNames, setStudentNames] = useState([]);
   const [teacherInfo, setTeacherInfo] = useState(null);
+  const [enrollmentMessage, setEnrollmentMessage] = useState(''); // State for enrollment message
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -77,6 +80,43 @@ function CourseDetails() {
     fetchCourseDetails();
   }, [courseId]);
 
+  // Function to handle enrollment
+// Function to handle enrollment
+const handleEnrollment = async () => {
+  const currentUserUid = getAuth().currentUser.uid; // Get UID of current user
+
+  // Check if the student is already enrolled
+  if (courseDetails.StudentsList.includes(currentUserUid)) {
+    setEnrollmentMessage('You are already enrolled in this course.');
+  } else {
+    try {
+      await CourseEnroll(currentUserUid, courseId); // Call enrollInCourse function with UID and courseId
+
+      // Update student's document with the enrolled course
+      const studentDocRef = doc(db, 'students', currentUserUid);
+      await updateDoc(studentDocRef, {
+        courses: arrayUnion(courseId) // Add courseId to courses array
+      });
+
+      // Update course document with student's UID
+      const courseDocRef = doc(db, 'subjects', courseId);
+      await updateDoc(courseDocRef, {
+        StudentsList: arrayUnion(currentUserUid) // Add currentUserUid to StudentsList array
+      });
+
+      setEnrollmentMessage('You are successfully enrolled in the course. Please check the People list for your name.');
+
+      // Reload the page after 2 seconds
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } catch (error) {
+      console.error('Error enrolling in course:', error);
+    }
+  }
+};
+
+
   if (!courseDetails || !teacherInfo) {
     return <div>Loading...</div>;
   }
@@ -91,10 +131,11 @@ function CourseDetails() {
         <p className="mb-1">Email: {teacherInfo.email}</p>
         <p className="mb-4">Qualification: {teacherInfo.qualification}</p>
         <button
-          onClick={() => enrollInCourse(courseId)}
+          onClick={handleEnrollment} // Call handleEnrollment when button is clicked
           className="mt-4 bg-[#0fa3b1] text-white py-2 px-4 rounded">
           Enroll
         </button>
+        <p>{enrollmentMessage}</p> {/* Display enrollment message */}
       </div>
       
       {/* People Column */}

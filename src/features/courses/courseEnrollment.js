@@ -1,32 +1,35 @@
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { FirebaseApp, db } from '../../lib/helper/firebaseClient';
+import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { db } from '../../lib/helper/firebaseClient';
 
+async function CourseEnroll(currentUserUid, courseId) {
+  try {
+    // Update the student's courses array
+    const studentDocRef = doc(db, 'students', currentUserUid);
+    const studentDocSnap = await getDoc(studentDocRef);
 
-async function CourseEnroll(courseId, announcementTitle, announcementDescription) {
-    try {
-        const courseRef = doc(db, 'subjects', courseId);
+    if (studentDocSnap.exists()) {
+      const studentData = studentDocSnap.data();
+      const updatedCourses = studentData.courses ? [...studentData.courses, courseId] : [courseId];
 
-        // Get the current array of announcements from the course document
-        const courseSnap = await getDoc(courseRef);
-        const currentAnnouncements = courseSnap.data().Announcements || [];
-
-        // Add the new announcement to the array
-        const newAnnouncement = {
-            title: announcementTitle,
-            description: announcementDescription
-        };
-        const updatedAnnouncements = [...currentAnnouncements, newAnnouncement];
-
-        // Update the Announcements array field in the course document
-        await updateDoc(courseRef, {
-            Announcements: updatedAnnouncements
-        });
-
-        console.log('Announcement posted successfully!');
-    } catch (error) {
-        console.error('Error posting announcement:', error);
-        throw error; // Propagate the error to handle it in the calling code
+      await updateDoc(studentDocRef, { courses: updatedCourses });
+    } else {
+      console.log(`Student document with ID ${currentUserUid} does not exist`);
+      return;
     }
+
+    // Update the StudentsList array in the corresponding course document
+    const courseDocRef = doc(db, 'subjects', courseId);
+    const courseDocSnap = await getDoc(courseDocRef);
+
+    if (courseDocSnap.exists()) {
+      await updateDoc(courseDocRef, { StudentsList: arrayUnion(currentUserUid) });
+      console.log(`Student ${currentUserUid} enrolled in course ${courseId}`);
+    } else {
+      console.log(`Course document with ID ${courseId} does not exist`);
+    }
+  } catch (error) {
+    console.error('Error enrolling course:', error);
+  }
 }
 
 export default CourseEnroll;
