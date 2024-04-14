@@ -68,18 +68,26 @@ function Form({ type }) {
   //   navigate('/dashboard');
   // };
 
-  function handleGoogleAuth() {
-
-    // Assuming useGoogleAuth returns a promise that resolves with the user's credentials
-    useGoogleAuth()
-      .then((userCredential) => {
-        console.log(userCredential);
-        // setUID(userCredential.user.uid);
-        navigate('/dashboard');
-      })
-      .catch((error) => {
-        console.error('Google authentication error:', error);
-      });
+  const handleGoogleAuth = async () => {
+    try {
+      //console.log(totp);
+      const userCredential = await useGoogleAuth();
+      const uid = userCredential.user.uid;
+  
+      // Assuming getUserRole fetches the user document which includes a 'qualification' field for faculty
+      const userDoc = await getUserRole(uid);
+  
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        // Assuming useGoogleAuth returns a promise that resolves with the user's credentials
+        const isFaculty = userData.qualification && userData.qualification.trim() !== "";
+        setIsFaculty(isFaculty);
+        navigate(isFaculty ? '/instructor-dashboard' : '/dashboard');
+      }
+    } catch (error) {
+      console.error(error.code, error.message);
+      // Show an error message to the user
+    }
   }
 
   // const onSubmitLogin = async ({ email, password }) => {
@@ -110,9 +118,10 @@ function Form({ type }) {
   // };
   
   
-  const onSubmitLogin = async ({ email, password }) => {
+  const onSubmitLogin = async ({ email, password, totp }) => {
     try {
-      const userCredential = await useLogin(email, password);
+      //console.log(totp);
+      const userCredential = await useLogin(email, password, totp);
       const uid = userCredential.user.uid;
   
       // Assuming getUserRole fetches the user document which includes a 'qualification' field for faculty
@@ -123,8 +132,9 @@ function Form({ type }) {
         // Check if 'qualification' exists and navigate accordingly
         const isFaculty = userData.qualification && userData.qualification.trim() !== "";
         setIsFaculty(isFaculty);
-
-        navigate(isFaculty ? '/instructor-dashboard' : '/dashboard');
+        //console.log(userCredential.user);
+        if(!userCredential.user.emailVerified) navigate('/verify-email');
+        else if(userCredential.user.multifactor == null) navigate("/totp-enroll");
       } else {
         throw new Error('User data not found.');
       }
@@ -292,6 +302,20 @@ function Form({ type }) {
                   Forgot Password?
                 </Link>
               )}
+            {type === "login" && (
+              <div className="flex flex-col">
+              <label className="pl-1 text-gray-500" htmlFor="totp">
+              <h1 className='text-[18px] text-gray-700'>TOTP</h1>
+              </label>
+              <input
+                className="border-2 py-2 px-4 rounded-md mb-2 text-gray-700 focus:outline-none focus:border-[#0fa3b1]"
+                type="text"
+                placeholder="Enter TOTP if you have one"
+                id="totp"
+                {...register("totp")}
+              />
+              </div>
+            )}
             </div>
             {type === "login" && (
               <div className="flex gap-1.5">

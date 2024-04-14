@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../lib/helper/firebaseClient';
+import { getName } from '../features/dashboard/dashboard/dashboardInfo';
 
 function CourseCard({ id, name }) {
   return (
@@ -14,6 +15,7 @@ function CourseCard({ id, name }) {
 
 function CoursesPage() {
   const [courses, setCourses] = useState([]);
+  const [name, setName] = useState('');
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -33,13 +35,24 @@ function CoursesPage() {
     fetchCourses();
   }, []);
 
+  useEffect(() => {
+    getName()
+      .then(fetchedName => {
+        //console.log(fetchedName);
+        setName(fetchedName);
+      })
+      .catch(error => {
+        console.error("Error fetching name:", error);
+      });
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#e1eaef]">
       <nav className='flex pr-8 pt-5 shadow-sm justify-between items-center'>
         <img className='h-10 max-w-48 mx-5' src='/Logos/coursecraft_logo.png' alt='Coursecraft' />
         <div className="flex items-center">
           <img className='h-10 w-10' src='/Logos/default_pfp.png' alt='Coursecraft' />
-          <div className="text-[#0fa3b1] text-[20px] font-bold tracking-wide mx-10">Rohith</div>
+          <div className="text-[#0fa3b1] text-[20px] font-bold tracking-wide mx-10">{name}</div>
         </div>
       </nav>
 

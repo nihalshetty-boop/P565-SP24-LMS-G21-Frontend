@@ -18,9 +18,8 @@ import CourseChat from "./pages/chat.jsx";
 import CoursesPage from "./pages/CoursesPage.jsx";
 import EditAssignment from "./components/EditAssignment.jsx";
 import DeleteAssignment from "./components/DeleteAssignment.jsx";
-
-
-
+import TotpEnroll from "./pages/TotpEnroll.jsx";
+import VerifyEmail from "./pages/VerifyEmail.jsx";
 
 
 function App() {
@@ -51,8 +50,9 @@ function App() {
         <Route path="/subject/:subjectId/chat" element={<CourseChat />} />
 
         <Route path="/manage-courses/:subjectId/edit/:assignmentId" element={<EditAssignment />} />
-  <Route path="/manage-courses/:subjectId/delete/:assignmentId" element={<DeleteAssignment />} />
-        
+        <Route path="/manage-courses/:subjectId/delete/:assignmentId" element={<DeleteAssignment />} />
+        <Route path="totp-enroll" element={<TotpEnroll />} />
+        <Route path="verify-email" element={<VerifyEmail />} />
       </Routes>
   
     

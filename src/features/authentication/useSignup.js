@@ -1,12 +1,18 @@
 import { doc, setDoc } from 'firebase/firestore';
 import { FirebaseApp, db } from '../../lib/helper/firebaseClient';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { multiFactor, TotpMultiFactorGenerator, TotpSecret, getAuth, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 
 
 export async function useSignup(email, password, fullName, department, level, qualification) {
     try {
         const auth = getAuth(FirebaseApp);
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        sendEmailVerification(auth.currentUser)
+            .then(() => {
+                console.log("Email verification sent.")
+            // Email verification sent!
+            // ...
+            });
 
         if (qualification === undefined) {
             // must be student

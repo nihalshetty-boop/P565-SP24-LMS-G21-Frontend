@@ -1,12 +1,13 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import Faculty_Courses from '../components/Faculty_Courses';
 import ManageCourses from '../components/ManageCourses'; 
 // import {getCourses, getCourseName, getName } from '../features/dashboard/dashboardInfo';
 import { getCourses, getCourseName, getName } from '../features/dashboard/dashboard/dashboardInfo';
 import SubjectCard from './SubjectCard';
+import { getAuth, signOut } from 'firebase/auth';
 
 
 async function getSubjects() {
@@ -27,7 +28,7 @@ async function getSubjects() {
 }
 
 function Faculty_Dashboard() {
-
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [subjects, setSubjects] = useState([]);
   const [name, setName] = useState('');
@@ -67,6 +68,12 @@ function Faculty_Dashboard() {
           <div className="flex items-center">
             <img className='h-10 w-10' src='/Logos/default_pfp.png' alt='Profile' />
             <div className="text-[#0fa3b1] text-[20px] font-bold tracking-wide mx-10">{name}</div>
+            <button
+              className={`px-4 py-2 rounded-md`}
+              onClick={() => {signOut(getAuth()); navigate('/');}}
+              >
+              Log out
+            </button>
           </div>
         </nav>
 
